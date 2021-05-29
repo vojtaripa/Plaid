@@ -251,8 +251,10 @@ app.get('/api/auth', async function (request, response, next) //
 // https://plaid.com/docs/#transactions
 app.get('/api/transactions', async function (request, response, next) {
   // Pull transactions for the Item for the last 30 days
-  const startDate = moment().subtract(5, 'days').format('YYYY-MM-DD');
-  const endDate = moment().format('YYYY-MM-DD');
+  const startDate = '2021-04-15';
+  const endDate = '2021-05-15';
+  //const my_amount = '6.33'; (DONT SEE AN OPTION IN Transaction Request for exact value... https://plaid.com/docs/api/products/#transactions-get-request-options
+  
   const configs = {
     access_token: ACCESS_TOKEN,
     //client_id: transactionsResponse.data.transaction.client_id,
@@ -260,19 +262,53 @@ app.get('/api/transactions', async function (request, response, next) {
     end_date: endDate,
     options: {
       //account_ids,
-	  count: 2,
-      offset: 0,
+		//amount: my_amount,
     },
   };
   try {
-    const transactionsResponse = await client.transactionsGet(configs);
+    const transactionsResponse = await client.transactionsGet(configs); //ACCESS_TOKEN, '2021-04-15', '2021-05-15', {amount: '6.33'}
     prettyPrintResponse(transactionsResponse);
+	
+	
+	//WORKS TO PRINT TO CONSOLE:
+	
+	console.log(typeof 42);
+	// expected output: "number"
+
+	console.log(typeof 'blubber');
+	// expected output: "string"
+	
+	//NOW PRINT THE VARIABLES I WANT - 
+	if((typeof transactionsResponse.data.amount) == 'number')
+	{
+		console.log('NUMBER');
+	}
+    else
+    {
+		console.log(typeof transactionsResponse.data.transactions.amount);
+    }		
+	
+	
+	
+	
+
     response.json(transactionsResponse.data);
   } catch (error) {
     prettyPrintResponse(error);
     return response.json(formatError(error.response));
   }
 });
+
+/*
+console.log(typeof 42);
+// expected output: "number"
+
+console.log(typeof 'blubber');
+// expected output: "string"
+
+*/
+
+
 
 // Retrieve Investment Transactions for an Item
 // https://plaid.com/docs/#investments
